@@ -8,9 +8,25 @@
 
         <div class="flex items-center gap-5">
 
-            <a href="cart/cart.php">
-                <i class="fa-solid fa-cart-shopping"></i>
+            <?php
+
+            $count = 0;
+
+            if (isset($_SESSION['cart'])) {
+
+                $count = array_sum($_SESSION['cart']);
+            }
+
+            ?>
+
+            <a href="/fruit_shop/cart/index.php">
+
+                <i class="fa fa-shopping-cart"></i>
+
                 Giỏ hàng
+
+                (<?= $count ?>)
+
             </a>
 
             <a href="order/orders.php">
@@ -18,7 +34,7 @@
                 Đơn hàng
             </a>
 
-            <?php if(isset($_SESSION['user'])) { ?>
+            <?php if (isset($_SESSION['user'])) { ?>
 
                 <span>
                     Xin chào,
