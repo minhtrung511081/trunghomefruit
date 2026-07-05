@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(isset($_SESSION['user'])){
+if (isset($_SESSION['user'])) {
     header("Location: ../index.php");
     exit;
 }
@@ -12,90 +12,89 @@ if(isset($_SESSION['user'])){
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<title>Đăng nhập</title>
+    <title>Đăng nhập</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
 <body class="bg-green-100">
 
-<div class="flex justify-center items-center h-screen">
+    <div class="flex justify-center items-center h-screen">
 
-<div class="bg-white w-[420px] rounded-xl shadow-xl p-8">
+        <div class="bg-white w-[420px] rounded-xl shadow-xl p-8">
 
-<h2 class="text-3xl font-bold text-center text-green-700 mb-8">
+            <h2 class="text-3xl font-bold text-center text-green-700 mb-8">
 
-<i class="fa-solid fa-user-lock"></i>
+                <i class="fa-solid fa-user-lock"></i>
 
-Đăng nhập
+                Đăng nhập
 
-</h2>
+            </h2>
 
-<form action="login_process.php" method="POST">
+            <form action="login_process.php" method="POST">
 
-<div class="mb-5">
+                <div class="mb-5">
 
-<label>Tên đăng nhập</label>
+                    <label>Tên đăng nhập</label>
 
-<input
+                    <input
 
-type="text"
+                        type="text"
 
-name="username"
+                        name="username"
 
-class="w-full border rounded p-3"
+                        class="w-full border rounded p-3"
 
-required>
+                        required>
 
-</div>
+                </div>
 
-<div class="mb-5">
+                <div class="mb-5">
 
-<label>Mật khẩu</label>
+                    <label>Mật khẩu</label>
 
-<input
+                    <input
 
-type="password"
+                        type="password"
 
-name="password"
+                        name="password"
 
-class="w-full border rounded p-3"
+                        class="w-full border rounded p-3"
 
-required>
+                        required>
 
-</div>
+                </div>
 
-<button
+                <button
 
-class="w-full bg-green-700 text-white p-3 rounded hover:bg-green-800">
+                    class="w-full bg-green-700 text-white p-3 rounded hover:bg-green-800">
 
-<i class="fa-solid fa-right-to-bracket"></i>
+                    <i class="fa-solid fa-right-to-bracket"></i>
 
-Đăng nhập
+                    Đăng nhập
 
-</button>
+                </button>
 
-</form>
+            </form>
 
-<?php
+            <?php
 
-if(isset($_GET['error'])){
+            if (isset($_GET['error'])) {
 
-echo "<p class='text-red-600 mt-5 text-center'>Sai tài khoản hoặc mật khẩu.</p>";
+                echo "<p class='text-red-600 mt-5 text-center'>Sai tài khoản hoặc mật khẩu.</p>";
+            }
 
-}
+            ?>
 
-?>
+        </div>
 
-</div>
-
-</div>
+    </div>
 
 </body>
 

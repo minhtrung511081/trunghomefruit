@@ -1,33 +1,33 @@
-<?php if(isset($_SESSION['user'])){ ?>
+<?php if (isset($_SESSION['user'])) { ?>
 
-<div class="flex gap-5">
+    <div class="flex gap-5">
 
-<span>
+        <span>
 
-Xin chào,
+            Xin chào,
 
-<b><?= $_SESSION['user']['fullname'] ?></b>
+            <b><?= $_SESSION['user']['fullname'] ?></b>
 
-</span>
+        </span>
 
-<a href="auth/logout.php">
+        <a href="auth/logout.php">
 
-<i class="fa fa-right-from-bracket"></i>
+            <i class="fa fa-right-from-bracket"></i>
 
-Đăng xuất
+            Đăng xuất
 
-</a>
+        </a>
 
-</div>
+    </div>
 
 <?php } else { ?>
 
-<a href="auth/login.php">
+    <a href="auth/login.php">
 
-<i class="fa fa-user"></i>
+        <i class="fa fa-user"></i>
 
-Đăng nhập
+        Đăng nhập
 
-</a>
+    </a>
 
 <?php } ?>

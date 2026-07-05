@@ -111,22 +111,18 @@ include("../includes/navbar.php");
 
     </table>
 
-    <div class="mt-5">
-
+    <div class="mt-6 flex gap-3">
         <a href="/fruit_shop/index.php"
-            class="bg-blue-500 text-white px-5 py-2 rounded">
-
+            class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded">
+            <i class="fa fa-arrow-left"></i>
             Tiếp tục mua
-
         </a>
 
         <a href="checkout.php"
-            class="bg-green-600 text-white px-5 py-2 rounded">
-
-            Thanh toán
-
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">
+            <i class="fa fa-shopping-bag"></i>
+            Đặt hàng
         </a>
-
     </div>
 
 </div>

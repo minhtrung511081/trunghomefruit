@@ -14,44 +14,42 @@ $sql = "SELECT u.*, r.role_name
 
 $stmt = $conn->prepare($sql);
 
-$stmt->bind_param("ss",$username,$password);
+$stmt->bind_param("ss", $username, $password);
 
 $stmt->execute();
 
-$result=$stmt->get_result();
+$result = $stmt->get_result();
 
-if($result->num_rows==1){
+if ($result->num_rows == 1) {
 
-$user=$result->fetch_assoc();
+    $user = $result->fetch_assoc();
 
-$_SESSION['user']=$user;
+    $_SESSION['user'] = $user;
 
-switch($user['role_name']){
+    switch ($user['role_name']) {
 
-    case 'Admin':
-        header("Location: ../admin/dashboard.php");
-        exit();
+        case 'Admin':
+            header("Location: ../admin/dashboard.php");
+            exit();
 
-    case 'Seller':
-        header("Location: ../seller/dashboard.php");
-        exit();
+        case 'Seller':
+            header("Location: ../seller/dashboard.php");
+            exit();
 
-    case 'Customer':
-        // Người mua về trang chủ
-        header("Location: ../index.php");
-        exit();
+        case 'Customer':
+            // Người mua về trang chủ
+            header("Location: ../index.php");
+            exit();
 
-    case 'Shipper':
-        header("Location: ../shipper/dashboard.php");
-        exit();
+        case 'Shipper':
+            header("Location: ../shipper/dashboard.php");
+            exit();
 
-    default:
-        header("Location: ../index.php");
-        exit();
-}
+        default:
+            header("Location: ../index.php");
+            exit();
+    }
+} else {
 
-}else{
-
-header("Location: login.php?error=1");
-
+    header("Location: login.php?error=1");
 }
