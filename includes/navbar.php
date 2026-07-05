@@ -14,7 +14,7 @@
 
             if (isset($_SESSION['cart'])) {
 
-                $count = array_sum($_SESSION['cart']);
+                $count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
             }
 
             ?>
