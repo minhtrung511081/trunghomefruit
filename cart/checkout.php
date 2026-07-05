@@ -101,6 +101,77 @@ $address   = htmlspecialchars($user['address'] ?? '');
                 rows="3"></textarea>
         </div>
 
+        <div class="mb-6">
+
+            <label class="font-semibold block mb-3">
+                Phương thức thanh toán
+            </label>
+
+            <div class="space-y-3">
+
+                <label class="flex items-center">
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="COD"
+                        checked
+                        onclick="changePayment()">
+
+                    <span class="ml-2">
+                        Thanh toán khi nhận hàng (COD)
+                    </span>
+                </label>
+
+                <label class="flex items-center">
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="ONLINE"
+                        onclick="changePayment()">
+
+                    <span class="ml-2">
+                        Thanh toán trước
+                    </span>
+                </label>
+
+            </div>
+
+        </div>
+
+        <div
+            id="onlinePayment"
+            style="display:none"
+            class="border rounded p-4">
+
+            <label class="flex items-center mb-3">
+
+                <input
+                    type="radio"
+                    name="online_type"
+                    value="BANK"
+                    checked>
+
+                <span class="ml-2">
+                    Chuyển khoản ngân hàng
+                </span>
+
+            </label>
+
+            <label class="flex items-center">
+
+                <input
+                    type="radio"
+                    name="online_type"
+                    value="ZALOPAY">
+
+                <span class="ml-2">
+                    ZaloPay
+                </span>
+
+            </label>
+
+        </div>
+
         <button
             type="submit"
             class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded">
@@ -163,6 +234,15 @@ $address   = htmlspecialchars($user['address'] ?? '');
             alert("Trình duyệt không hỗ trợ GPS.");
 
         }
+
+    }
+
+    function changePayment() {
+
+        let online = document.querySelector('input[value="ONLINE"]').checked;
+
+        document.getElementById("onlinePayment").style.display =
+            online ? "block" : "none";
 
     }
 </script>

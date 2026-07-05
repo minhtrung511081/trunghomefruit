@@ -16,8 +16,6 @@ include_once __DIR__ . '/../config/database.php';
 
     <title>Cửa Hàng Gia Dụng và Trái Cây</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>

@@ -359,3 +359,8 @@ CREATE TABLE order_details (
 ALTER TABLE orders
 ADD latitude VARCHAR(50),
 ADD longitude VARCHAR(50);
+
+ALTER TABLE orders
+ADD payment_method VARCHAR(50),
+ADD payment_status ENUM('Chưa thanh toán','Đã thanh toán')
+DEFAULT 'Chưa thanh toán';
