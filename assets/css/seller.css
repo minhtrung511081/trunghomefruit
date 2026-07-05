@@ -1,0 +1,15 @@
+body{
+    margin:0;
+}
+
+#sidebar{
+    transition:.3s;
+}
+
+.menu-item:hover{
+    background:#166534;
+}
+
+.active-menu{
+    background:#14532d;
+}

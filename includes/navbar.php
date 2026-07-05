@@ -1,0 +1,46 @@
+<nav class="bg-green-700 text-white shadow-lg">
+
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+
+        <a href="../index.php" class="text-2xl font-bold">
+            🍉 Cửa Hàng Gia Dụng và Trái Cây
+        </a>
+
+        <div class="flex items-center gap-5">
+
+            <a href="cart/cart.php">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Giỏ hàng
+            </a>
+
+            <a href="order/orders.php">
+                <i class="fa-solid fa-box"></i>
+                Đơn hàng
+            </a>
+
+            <?php if(isset($_SESSION['user'])) { ?>
+
+                <span>
+                    Xin chào,
+                    <strong><?= $_SESSION['user']['fullname']; ?></strong>
+                </span>
+
+                <a href="auth/logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Đăng xuất
+                </a>
+
+            <?php } else { ?>
+
+                <a href="auth/login.php">
+                    <i class="fa-solid fa-user"></i>
+                    Đăng nhập
+                </a>
+
+            <?php } ?>
+
+        </div>
+
+    </div>
+
+</nav>
