@@ -1,0 +1,335 @@
+
+fruit-shop/
+│
+├── admin/
+│   ├── dashboard.php
+│   ├── products/
+│   ├── users/
+│   ├── orders/
+│   ├── promotions/
+│   └── banners/
+│
+├── assets/
+│   ├── css/
+│   │      style.css
+│   │      admin.css
+│   │
+│   ├── js/
+│   │      jquery.min.js
+│   │      app.js
+│   │      cart.js
+│   │
+│   ├── images/
+│   │      products/
+│   │      avatars/
+│   │      banners/
+│   │
+│   └── icons/
+│
+├── config/
+│      database.php
+│
+├── includes/
+│      header.php
+│      footer.php
+│      navbar.php
+│      sidebar.php
+│
+├── auth/
+│      login.php
+│      logout.php
+│      register.php
+│
+├── cart/
+├── order/
+├── shipper/
+├── uploads/
+├── index.php
+└── .htaccess
+
+
+Cơ sở dữ liệu
+
+Mình sẽ thiết kế khoảng 10–12 bảng được chuẩn hóa để tránh dư dữ liệu:
+
+users
+roles
+products
+product_images
+carts
+cart_items
+orders
+order_items
+promotions
+banners
+order_tracking
+payment_methods
+
+Giao diện
+
+Website sẽ có:
+
+Trang chủ có banner chạy tự động.
+Danh mục sản phẩm dạng Card.
+Modal thêm sản phẩm vào giỏ.
+Tìm kiếm theo tên.
+Lọc theo giá.
+Giỏ hàng.
+Theo dõi đơn hàng.
+Responsive trên điện thoại và máy tính.
+Font Awesome cho toàn bộ icon.
+
+Chức năng Admin
+Dashboard thống kê.
+Quản lý sản phẩm.
+Quản lý tài khoản.
+Phân quyền.
+Upload ảnh đại diện.
+Upload nhiều ảnh sản phẩm.
+Upload banner quảng cáo.
+Khuyến mãi giờ vàng.
+Quản lý đơn hàng.
+Phân công shipper.
+Thống kê doanh thu.
+
+Chức năng Shipper
+Xem đơn được giao.
+Cập nhật vị trí trên Google Maps.
+Cập nhật trạng thái:
+Đang giao.
+Đã giao.
+Không nhận hàng.
+Trả hàng.
+
+Tích hợp Google Maps
+Người mua chọn vị trí giao hàng trên bản đồ.
+Lưu tọa độ (latitude, longitude) vào MySQL.
+Khi shipper cập nhật vị trí, người mua có thể xem hành trình giao hàng trên bản đồ.
+
+Khuyến nghị
+
+Với khối lượng yêu cầu hiện tại, đây là một đồ án hoàn chỉnh, ước tính:
+
+Khoảng 180–250 file PHP/CSS/JS.
+Khoảng 15.000–20.000 dòng mã nguồn.
+Đầy đủ CSDL MySQL.
+Chạy trực tiếp trên XAMPP.
+
+Mình có thể xây dựng toàn bộ dự án hoàn chỉnh, bao gồm cả mã nguồn, cơ sở dữ liệu, giao diện và chức năng, nhưng sẽ phải thực hiện theo từng phần trong nhiều lần trao đổi vì một câu trả lời không thể chứa toàn bộ hàng chục nghìn dòng mã. Mỗi phần sẽ có thể chạy được ngay để bạn ghép thành dự án hoàn chỉnh.
+roles
+
+users
+
+products
+
+product_images
+
+cart
+
+cart_items
+
+orders
+
+order_items
+
+payments
+
+promotions
+
+promotion_products
+
+banners
+
+tracking
+
+CREATE TABLE roles(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+role_name VARCHAR(30) NOT NULL
+
+);
+
+INSERT INTO roles(role_name)
+
+VALUES
+
+('Admin'),
+
+('Seller'),
+
+('Customer'),
+
+('Shipper');
+
+CREATE TABLE users(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+fullname VARCHAR(100) NOT NULL,
+
+username VARCHAR(50) UNIQUE,
+
+password VARCHAR(255),
+
+phone VARCHAR(20),
+
+avatar VARCHAR(255),
+
+role_id INT,
+
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+FOREIGN KEY(role_id)
+
+REFERENCES roles(id)
+
+);
+
+
+INSERT INTO users
+
+(fullname,username,password,phone,role_id)
+
+VALUES
+
+('Administrator',
+
+'admin',
+
+MD5('123456'),
+
+'0772187109',
+
+1),
+
+('Người bán',
+
+'seller',
+
+MD5('123456'),
+
+'0772187109',
+
+2),
+
+('Khách hàng',
+
+'user',
+
+MD5('123456'),
+
+'0772187109',
+
+3),
+
+('Shipper',
+
+'shipper',
+
+MD5('123456'),
+
+'0772187109',
+
+4);
+
+CREATE TABLE products(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+product_name VARCHAR(200),
+
+category VARCHAR(100),
+
+unit VARCHAR(20),
+
+price DECIMAL(12,0),
+
+image VARCHAR(255),
+
+description TEXT,
+
+status TINYINT DEFAULT 1
+
+);
+
+INSERT INTO products(product_name,category,unit,price)
+
+VALUES
+
+('Cau trái dài','Cau','kg',50000),
+
+('Cau trái tròn','Cau','kg',10000),
+
+('Hạnh xanh đẹp','Hạnh','kg',4000),
+
+('Hạnh ép','Hạnh','kg',2000),
+
+('Ớt hiểm xanh chưa chín','Ớt','kg',50000),
+
+('Ớt hiểm xanh chín','Ớt','kg',35000),
+
+('Bàn tròn inox','Gia dụng','cái',150000),
+
+('Nệm cao su non dày','Gia dụng','cái',500000),
+
+('Nệm cao su non mỏng','Gia dụng','cái',250000),
+
+('Ghế nhựa xanh','Gia dụng','cái',10000),
+
+('Màn xếp vuông thông minh','Gia dụng','cái',150000),
+
+('Mùng ngủ dây giăng','Gia dụng','cái',80000);
+
+CREATE TABLE product_images(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+product_id INT,
+
+image VARCHAR(255),
+
+FOREIGN KEY(product_id)
+
+REFERENCES products(id)
+
+ON DELETE CASCADE
+
+);
+CREATE TABLE carts(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+user_id INT,
+
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+FOREIGN KEY(user_id)
+
+REFERENCES users(id)
+
+);
+
+CREATE TABLE cart_items(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+cart_id INT,
+
+product_id INT,
+
+quantity DECIMAL(10,2),
+
+price DECIMAL(12,0),
+
+FOREIGN KEY(cart_id)
+
+REFERENCES carts(id)
+
+ON DELETE CASCADE,
+
+FOREIGN KEY(product_id)
+
+REFERENCES products(id)
+
+);
