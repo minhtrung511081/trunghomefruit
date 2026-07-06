@@ -40,7 +40,7 @@ include 'includes/navbar.php';
                     <!-- THÊM VÀO GIỎ -->
                     <?php if (isset($_SESSION['user'])) { ?>
 
-                        <a href="cart/add.php?id=<?= $row['id'] ?>"
+                        <a href="customer/cart/add.php?id=<?= $row['id'] ?>"
                             class="bg-green-600 text-white w-full mt-4 p-3 rounded block text-center">
                             <i class="fa fa-cart-plus"></i>
                             Thêm vào giỏ

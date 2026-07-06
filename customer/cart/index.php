@@ -1,14 +1,14 @@
 <?php
 session_start();
-include("../config/database.php");
+require_once __DIR__ . "/../../config/database.php";
 
 if (!isset($_SESSION['user'])) {
     header("Location: /fruit_shop/login.php");
     exit;
 }
 
-include("../includes/header.php");
-include("../includes/navbar.php");
+require_once __DIR__ . "/../../includes/header.php";
+require_once __DIR__ . "/../../includes/navbar.php";
 ?>
 
 <div class="max-w-6xl mx-auto mt-8">
@@ -127,4 +127,4 @@ include("../includes/navbar.php");
 
 </div>
 
-<?php include("../includes/footer.php"); ?>
+<?php require_once __DIR__ . "/../../includes/footer.php"; ?>

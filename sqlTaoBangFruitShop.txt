@@ -364,3 +364,26 @@ ALTER TABLE orders
 ADD payment_method VARCHAR(50),
 ADD payment_status ENUM('Chưa thanh toán','Đã thanh toán')
 DEFAULT 'Chưa thanh toán';
+CREATE TABLE user_addresses(
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+user_id INT NOT NULL,
+
+full_name VARCHAR(100),
+
+phone VARCHAR(20),
+
+address TEXT,
+
+address_detail VARCHAR(255),
+
+latitude DECIMAL(10,7),
+
+longitude DECIMAL(10,7),
+
+is_default TINYINT(1) DEFAULT 0,
+
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);

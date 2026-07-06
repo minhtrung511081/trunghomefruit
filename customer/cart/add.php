@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../config/database.php");
+require_once __DIR__ . "/../../config/database.php";
 
 if (!isset($_SESSION['user'])) {
     header("Location: /fruit_shop/login.php");
@@ -32,5 +32,5 @@ if (isset($_SESSION['cart'][$product_id])) {
     $_SESSION['cart'][$product_id] = 1;
 }
 
-header("Location: /fruit_shop/cart/index.php");
+header("Location: /fruit_shop/customer/cart/index.php");
 exit;
