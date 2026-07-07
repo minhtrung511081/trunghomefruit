@@ -98,8 +98,8 @@ require_once __DIR__ . "/../../includes/navbar.php";
                     while ($shipper = mysqli_fetch_assoc($shippers)) {
 
                         $avatar = !empty($shipper['avatar'])
-                            ? "/fruit_shop/uploads/avatars/" . $shipper['avatar']
-                            : "/fruit_shop/assets/images/default-avatar.png";
+                            ? "/fruit_shop/assets/images/avatars/" . $shipper['avatar']
+                            : "/fruit_shop/assets/images/avatars/default-avatar.png";
 
                     ?>
 
@@ -160,13 +160,11 @@ require_once __DIR__ . "/../../includes/navbar.php";
                 <div class="mt-8 flex justify-between">
 
                     <a
-                        href="detail.php?id=<?= $order_id; ?>"
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded">
+                        href="/fruit_shop/seller/dashboard.php?page=orders&id=<?= $order_id ?>"
+                        class="btn-back-detail bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded">
 
                         <i class="fa-solid fa-arrow-left"></i>
-
                         Quay lại
-
                     </a>
 
                     <button
@@ -187,6 +185,18 @@ require_once __DIR__ . "/../../includes/navbar.php";
 
     </div>
 
+    <script>
+        $(document).on("click", ".btn-back-detail", function(e) {
+
+            e.preventDefault();
+
+            let id = <?= $order_id ?>;
+
+            window.location =
+                "/fruit_shop/seller/dashboard.php?load=detail&id=" + id;
+
+        });
+    </script>
 </div>
 
 <?php
