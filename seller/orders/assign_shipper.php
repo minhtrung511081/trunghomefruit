@@ -84,8 +84,8 @@ require_once __DIR__ . "/../../includes/navbar.php";
 
             <form
                 method="post"
-                action="assign_shipper_save.php">
-
+                <form id="frmAssign">
+                <!-- action="assign_shipper_save.php" -->
                 <input
                     type="hidden"
                     name="order_id"
@@ -194,6 +194,38 @@ require_once __DIR__ . "/../../includes/navbar.php";
 
             window.location =
                 "/fruit_shop/seller/dashboard.php?load=detail&id=" + id;
+
+        });
+
+        $("#frmAssign").submit(function(e) {
+
+            e.preventDefault();
+
+            $.ajax({
+
+                url: "/fruit_shop/seller/orders/assign_shipper_save.php",
+
+                type: "POST",
+
+                data: $(this).serialize(),
+
+                success: function(res) {
+
+                    res = $.trim(res);
+
+                    if (res == "success") {
+
+                        window.location.href = "/fruit_shop/seller/orders/detail.php?id=<?= $order_id ?>";
+
+                    } else {
+
+                        alert(res);
+
+                    }
+
+                }
+
+            });
 
         });
     </script>

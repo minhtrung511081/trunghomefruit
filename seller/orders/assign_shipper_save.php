@@ -113,24 +113,14 @@ mysqli_stmt_bind_param(
     $order_id
 );
 
+
 if (mysqli_stmt_execute($stmt)) {
-
-    echo "<script>
-
-    alert('Đã giao đơn hàng cho shipper.');
-
-    location='detail.php?id={$order_id}';
-
-    </script>";
+    echo "success";
+    exit;
 } else {
-
-    echo "<script>
-
-    alert('Có lỗi xảy ra.');
-
-    history.back();
-
-    </script>";
+    echo "error";
+    exit;
 }
+
 
 mysqli_close($conn);
