@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once __DIR__ . "/../../config/database.php";
 
 if (!isset($_SESSION['user'])) {
@@ -19,603 +20,447 @@ $user = $_SESSION['user'];
 
 $sql = "SELECT *
         FROM user_addresses
-        WHERE user_id = ?
-        ORDER BY is_default DESC, id DESC";
+        WHERE user_id=?
+        ORDER BY is_default DESC,id DESC";
 
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $user['id']);
 mysqli_stmt_execute($stmt);
 
-$addresses = mysqli_stmt_get_result($stmt);
+$addressResult = mysqli_stmt_get_result($stmt);
+
 ?>
 
-<div class="max-w-4xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-6">
+<div class="max-w-5xl mx-auto mt-8">
 
-    <h2 class="text-3xl font-bold mb-6 text-center">
-        Xác nhận đặt hàng
-    </h2>
+    <div class="bg-white rounded-lg shadow p-6">
 
-    <form action="place_order.php" method="POST">
+        <h2 class="text-3xl font-bold mb-6 text-center">
 
-        <!-- ĐỊA CHỈ GIAO HÀNG -->
+            Xác nhận đơn hàng
 
-        <div class="border rounded-lg p-5 mb-6">
+        </h2>
 
-            <div class="flex justify-between items-center mb-4">
+        <form action="place_order.php" method="POST">
 
-                <h3 class="text-xl font-bold text-blue-600">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Địa chỉ giao hàng
-                </h3>
+            <!-- ĐỊA CHỈ -->
 
-                <a
-                    href="/fruit_shop/customer/addresses/index.php"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            <div class="border rounded-lg p-5 mb-6">
 
-                    <i class="fa-solid fa-address-book"></i>
+                <div class="flex justify-between items-center mb-4">
 
-                    Quản lý địa chỉ
+                    <h3 class="text-xl font-bold">
 
-                </a>
+                        <i class="fa-solid fa-location-dot text-red-500"></i>
 
-            </div>
+                        Địa chỉ giao hàng
 
-            <?php if (mysqli_num_rows($addresses) > 0) { ?>
-
-                <?php while ($row = mysqli_fetch_assoc($addresses)) { ?>
-
-                    <label
-                        class="block border rounded-lg p-4 mb-3 cursor-pointer hover:bg-gray-50">
-
-                        <div class="flex">
-
-                            <input
-                                type="radio"
-                                name="address_id"
-                                value="<?= $row['id'] ?>"
-                                <?= $row['is_default'] ? 'checked' : '' ?>
-                                required>
-
-                            <div class="ml-4 w-full">
-
-                                <div class="flex justify-between">
-
-                                    <strong>
-
-                                        <?= htmlspecialchars($row['full_name']) ?>
-
-                                    </strong>
-
-                                    <?php if ($row['is_default']) { ?>
-
-                                        <span
-                                            class="bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
-
-                                            Mặc định
-
-                                        </span>
-
-                                    <?php } ?>
-
-                                </div>
-
-                                <div class="text-gray-700 mt-2">
-
-                                    <i class="fa-solid fa-phone"></i>
-
-                                    <?= htmlspecialchars($row['phone']) ?>
-
-                                </div>
-
-                                <div class="text-gray-700 mt-2">
-
-                                    <i class="fa-solid fa-location-dot"></i>
-
-                                    <?= htmlspecialchars($row['address']) ?>
-
-                                </div>
-
-                                <?php if (!empty($row['address_detail'])) { ?>
-
-                                    <div class="text-gray-500 mt-2">
-
-                                        <?= htmlspecialchars($row['detail']) ?>
-
-                                    </div>
-
-                                <?php } ?>
-
-                            </div>
-
-                        </div>
-
-                    </label>
-
-                <?php } ?>
-
-            <?php } else { ?>
-
-                <div
-                    class="bg-yellow-100 border border-yellow-300 rounded-lg p-5">
-
-                    <p class="mb-4 text-yellow-800">
-
-                        Bạn chưa có địa chỉ giao hàng.
-
-                    </p>
+                    </h3>
 
                     <a
                         href="/fruit_shop/customer/addresses/index.php"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
 
-                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-address-book"></i>
 
-                        Thêm địa chỉ
+                        Quản lý địa chỉ
 
                     </a>
 
                 </div>
 
-            <?php } ?>
+                <?php
 
-        </div>
+                if (mysqli_num_rows($addressResult) > 0) {
 
-                <!-- DANH SÁCH SẢN PHẨM -->
+                    while ($address = mysqli_fetch_assoc($addressResult)) {
 
-        <div class="border rounded-lg p-5 mb-6">
+                ?>
 
-            <h3 class="text-xl font-bold text-green-600 mb-4">
-                <i class="fa-solid fa-cart-shopping"></i>
-                Sản phẩm đặt mua
-            </h3>
+                        <label
+                            class="border rounded-lg p-4 mb-3 block cursor-pointer hover:bg-gray-50">
 
-            <?php
+                            <div class="flex">
 
-            $tongTien = 0;
+                                <input
+                                    type="radio"
+                                    name="address_id"
+                                    value="<?= $address['id']; ?>"
+                                    <?= $address['is_default'] ? 'checked' : ''; ?>
+                                    required>
 
-            foreach ($_SESSION['cart'] as $item) {
+                                <div class="ml-4 flex-1">
 
-                $thanhTien = $item['price'] * $item['quantity'];
+                                    <div class="font-bold text-lg">
 
-                $tongTien += $thanhTien;
+                                        <?= htmlspecialchars($address['full_name']); ?>
 
-            ?>
+                                    </div>
 
-                <div class="flex items-center border-b py-4">
+                                    <div class="mt-2">
 
-                    <img
-                        src="/fruit_shop/uploads/products/<?= htmlspecialchars($item['image']) ?>"
-                        class="w-20 h-20 rounded object-cover border">
+                                        <i class="fa-solid fa-phone"></i>
 
-                    <div class="ml-4 flex-1">
+                                        <?= htmlspecialchars($address['phone']); ?>
 
-                        <h4 class="font-bold text-lg">
+                                    </div>
 
-                            <?= htmlspecialchars($item['name']) ?>
+                                    <div class="mt-2">
 
-                        </h4>
+                                        <i class="fa-solid fa-location-dot"></i>
 
-                        <div class="text-gray-600 mt-1">
+                                        <?= htmlspecialchars($address['address']); ?>
 
-                            Đơn giá:
+                                    </div>
 
-                            <span class="text-red-600 font-semibold">
+                                    <?php if (!empty($address['address_detail'])) { ?>
 
-                                <?= number_format($item['price']) ?> đ
+                                        <div class="text-gray-500 mt-2">
 
-                            </span>
+                                            <?= htmlspecialchars($address['address_detail']); ?>
+
+                                        </div>
+
+                                    <?php } ?>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+                    <?php
+
+                    }
+                } else {
+
+                    ?>
+
+                    <div class="bg-yellow-100 border rounded-lg p-5">
+
+                        <p class="mb-4">
+
+                            Bạn chưa có địa chỉ giao hàng.
+
+                        </p>
+
+                        <a
+                            href="/fruit_shop/customer/addresses/index.php"
+                            class="bg-green-600 text-white px-4 py-2 rounded">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Thêm địa chỉ
+
+                        </a>
+
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+            <!-- DANH SÁCH SẢN PHẨM -->
+
+            <div class="border rounded-lg p-5 mb-6">
+
+                <h3 class="text-xl font-bold text-green-600 mb-5">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    Sản phẩm đặt mua
+
+                </h3>
+
+                <?php
+
+                $tongTien = 0;
+
+                foreach ($_SESSION['cart'] as $product_id => $quantity) {
+
+                    $product_id = (int)$product_id;
+                    $quantity   = (float)$quantity;
+
+                    $sqlProduct = "SELECT * FROM products WHERE id=? LIMIT 1";
+
+                    $stmtProduct = mysqli_prepare($conn, $sqlProduct);
+
+                    mysqli_stmt_bind_param($stmtProduct, "i", $product_id);
+
+                    mysqli_stmt_execute($stmtProduct);
+
+                    $resultProduct = mysqli_stmt_get_result($stmtProduct);
+
+                    if (!$product = mysqli_fetch_assoc($resultProduct)) {
+                        continue;
+                    }
+
+                    $price = (float)$product['price'];
+
+                    $subTotal = $price * $quantity;
+
+                    $tongTien += $subTotal;
+
+                ?>
+
+                    <div class="flex items-center border-b py-4">
+
+                        <img
+                            src="/fruit_shop/assets/images/products/<?= htmlspecialchars($product['image']) ?>"
+                            class="w-24 h-24 object-cover rounded border">
+
+                        <div class="ml-4 flex-1">
+
+                            <div class="text-lg font-bold">
+
+                                <?= htmlspecialchars($product['product_name']) ?>
+
+                            </div>
+
+                            <div class="mt-2 text-red-600 font-semibold">
+
+                                <?= number_format($price) ?> đ
+
+                            </div>
+
+                            <div class="mt-2">
+
+                                Số lượng:
+
+                                <strong>
+
+                                    <?= $quantity ?>
+
+                                </strong>
+
+                                <?php
+                                if (!empty($product['unit'])) {
+                                    echo htmlspecialchars($product['unit']);
+                                }
+                                ?>
+
+                            </div>
 
                         </div>
 
-                        <div class="text-gray-600 mt-1">
+                        <div class="text-right">
 
-                            Số lượng:
+                            <div class="text-red-600 text-xl font-bold">
 
-                            <strong>
+                                <?= number_format($subTotal) ?> đ
 
-                                <?= $item['quantity'] ?>
-
-                                <?= $item['unit'] ?>
-
-                            </strong>
+                            </div>
 
                         </div>
 
                     </div>
 
-                    <div class="text-right">
+                <?php
 
-                        <div class="font-bold text-red-600 text-lg">
+                }
 
-                            <?= number_format($thanhTien) ?> đ
+                ?>
 
-                        </div>
+                <div class="text-right mt-5">
 
-                    </div>
+                    <span class="text-xl">
+
+                        Tổng tiền:
+
+                    </span>
+
+                    <span class="text-2xl font-bold text-red-600">
+
+                        <?= number_format($tongTien) ?> đ
+
+                    </span>
 
                 </div>
 
-            <?php } ?>
+            </div>
 
-            <div class="text-right mt-5">
+            <!-- GHI CHÚ -->
 
-                <span class="text-xl font-bold">
+            <div class="mb-6">
 
-                    Tổng tiền:
+                <label class="font-semibold block mb-2">
 
-                </span>
+                    Ghi chú
 
-                <span class="text-2xl text-red-600 font-bold">
+                </label>
 
-                    <?= number_format($tongTien) ?> đ
-
-                </span>
+                <textarea
+                    name="note"
+                    rows="4"
+                    class="w-full border rounded p-3"
+                    placeholder="Nhập ghi chú nếu có..."></textarea>
 
             </div>
 
-        </div>
+            <!-- PHƯƠNG THỨC THANH TOÁN -->
 
-        <!-- GHI CHÚ -->
+            <div class="border rounded-lg p-5 mb-6">
 
-        <div class="mb-5">
+                <h3 class="text-xl font-bold mb-4">
 
-            <label class="block font-semibold mb-2">
+                    <i class="fa-solid fa-wallet"></i>
 
-                <i class="fa-solid fa-pen"></i>
+                    Phương thức thanh toán
 
-                Ghi chú
+                </h3>
 
-            </label>
-
-            <textarea
-                name="note"
-                rows="4"
-                class="w-full border rounded p-3"
-                placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
-
-        </div>
-
-        <!-- PHƯƠNG THỨC THANH TOÁN -->
-
-        <div class="border rounded-lg p-5 mb-6">
-
-            <h3 class="text-xl font-bold mb-4">
-
-                <i class="fa-solid fa-wallet"></i>
-
-                Phương thức thanh toán
-
-            </h3>
-
-            <label class="flex items-center mb-4 cursor-pointer">
-
-                <input
-                    type="radio"
-                    name="payment_method"
-                    value="COD"
-                    checked
-                    onclick="changePayment()">
-
-                <span class="ml-3">
-
-                    Thanh toán khi nhận hàng (COD)
-
-                </span>
-
-            </label>
-
-            <label class="flex items-center cursor-pointer">
-
-                <input
-                    type="radio"
-                    name="payment_method"
-                    value="ONLINE"
-                    onclick="changePayment()">
-
-                <span class="ml-3">
-
-                    Thanh toán trước
-
-                </span>
-
-            </label>
-
-            <div
-                id="onlinePayment"
-                class="border rounded-lg p-4 mt-5"
-                style="display:none;">
-
-                <label class="flex items-center mb-3">
+                <label class="flex items-center mb-4 cursor-pointer">
 
                     <input
                         type="radio"
-                        name="online_type"
-                        value="BANK"
-                        checked>
+                        name="payment_method"
+                        value="COD"
+                        checked
+                        onclick="changePayment()">
 
-                    <span class="ml-2">
+                    <span class="ml-3">
 
-                        Chuyển khoản ngân hàng
+                        Thanh toán khi nhận hàng (COD)
 
                     </span>
 
                 </label>
 
-                <label class="flex items-center">
+                <label class="flex items-center cursor-pointer">
 
                     <input
                         type="radio"
-                        name="online_type"
-                        value="ZALOPAY">
+                        name="payment_method"
+                        value="ONLINE"
+                        onclick="changePayment()">
 
-                    <span class="ml-2">
+                    <span class="ml-3">
 
-                        Thanh toán qua ZaloPay
+                        Thanh toán chuyển khoản
 
                     </span>
 
                 </label>
 
-            </div>
+                <div
+                    id="onlinePayment"
+                    class="border rounded-lg p-4 mt-5"
+                    style="display:none;">
 
-        </div>
+                    <div class="mb-3 font-semibold">
 
-        <!-- NÚT ĐẶT HÀNG -->
-
-        <div class="flex justify-between">
-
-            <a
-                href="/fruit_shop/customer/cart/index.php"
-                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded">
-
-                <i class="fa-solid fa-arrow-left"></i>
-
-                Quay lại giỏ hàng
-
-            </a>
-
-            <button
-                type="submit"
-                class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded">
-
-                <i class="fa-solid fa-check"></i>
-
-                Xác nhận đặt hàng
-
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
-
-        <!-- DANH SÁCH SẢN PHẨM -->
-
-        <div class="border rounded-lg p-5 mb-6">
-
-            <h3 class="text-xl font-bold text-green-600 mb-4">
-                <i class="fa-solid fa-cart-shopping"></i>
-                Sản phẩm đặt mua
-            </h3>
-
-            <?php
-
-            $tongTien = 0;
-
-            foreach ($_SESSION['cart'] as $item) {
-
-                $thanhTien = $item['price'] * $item['quantity'];
-
-                $tongTien += $thanhTien;
-
-            ?>
-
-                <div class="flex items-center border-b py-4">
-
-                    <img
-                        src="/fruit_shop/uploads/products/<?= htmlspecialchars($item['image']) ?>"
-                        class="w-20 h-20 rounded object-cover border">
-
-                    <div class="ml-4 flex-1">
-
-                        <h4 class="font-bold text-lg">
-
-                            <?= htmlspecialchars($item['name']) ?>
-
-                        </h4>
-
-                        <div class="text-gray-600 mt-1">
-
-                            Đơn giá:
-
-                            <span class="text-red-600 font-semibold">
-
-                                <?= number_format($item['price']) ?> đ
-
-                            </span>
-
-                        </div>
-
-                        <div class="text-gray-600 mt-1">
-
-                            Số lượng:
-
-                            <strong>
-
-                                <?= $item['quantity'] ?>
-
-                                <?= $item['unit'] ?>
-
-                            </strong>
-
-                        </div>
+                        Chọn hình thức thanh toán
 
                     </div>
 
-                    <div class="text-right">
+                    <label class="flex items-center mb-3">
 
-                        <div class="font-bold text-red-600 text-lg">
+                        <input
+                            type="radio"
+                            name="online_type"
+                            value="BANK"
+                            checked>
 
-                            <?= number_format($thanhTien) ?> đ
+                        <span class="ml-2">
 
-                        </div>
+                            Chuyển khoản ngân hàng
 
-                    </div>
+                        </span>
+
+                    </label>
+
+                    <label class="flex items-center">
+
+                        <input
+                            type="radio"
+                            name="online_type"
+                            value="ZALOPAY">
+
+                        <span class="ml-2">
+
+                            Thanh toán bằng ZaloPay
+
+                        </span>
+
+                    </label>
 
                 </div>
 
-            <?php } ?>
+            </div>
 
-            <div class="text-right mt-5">
+            <!-- NÚT ĐẶT HÀNG -->
 
-                <span class="text-xl font-bold">
+            <div class="flex justify-between">
 
-                    Tổng tiền:
+                <a
+                    href="/fruit_shop/customer/cart/index.php"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded">
 
-                </span>
+                    <i class="fa-solid fa-arrow-left"></i>
 
-                <span class="text-2xl text-red-600 font-bold">
+                    Quay lại giỏ hàng
 
-                    <?= number_format($tongTien) ?> đ
+                </a>
 
-                </span>
+                <button
+                    type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Xác nhận đặt hàng
+
+                </button>
 
             </div>
 
-        </div>
+        </form>
 
-        <!-- GHI CHÚ -->
+    </div>
 
-        <div class="mb-5">
+    <script>
+        function changePayment() {
 
-            <label class="block font-semibold mb-2">
+            let online = document.querySelector(
+                'input[value="ONLINE"]'
+            ).checked;
 
-                <i class="fa-solid fa-pen"></i>
+            document.getElementById("onlinePayment").style.display =
+                online ? "block" : "none";
 
-                Ghi chú
+        }
 
-            </label>
+        changePayment();
+    </script>
 
-            <textarea
-                name="note"
-                rows="4"
-                class="w-full border rounded p-3"
-                placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
 
-        </div>
+            let address = document.querySelector("input[name='address_id']");
+            let btn = document.querySelector("button[type='submit']");
 
-        <!-- PHƯƠNG THỨC THANH TOÁN -->
+            if (!address) {
 
-        <div class="border rounded-lg p-5 mb-6">
+                btn.disabled = true;
 
-            <h3 class="text-xl font-bold mb-4">
+                btn.classList.remove(
+                    "bg-green-600",
+                    "hover:bg-green-700"
+                );
 
-                <i class="fa-solid fa-wallet"></i>
+                btn.classList.add(
+                    "bg-gray-400",
+                    "cursor-not-allowed"
+                );
 
-                Phương thức thanh toán
+                btn.innerHTML =
+                    '<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng thêm địa chỉ giao hàng';
 
-            </h3>
+            }
 
-            <label class="flex items-center mb-4 cursor-pointer">
-
-                <input
-                    type="radio"
-                    name="payment_method"
-                    value="COD"
-                    checked
-                    onclick="changePayment()">
-
-                <span class="ml-3">
-
-                    Thanh toán khi nhận hàng (COD)
-
-                </span>
-
-            </label>
-
-            <label class="flex items-center cursor-pointer">
-
-                <input
-                    type="radio"
-                    name="payment_method"
-                    value="ONLINE"
-                    onclick="changePayment()">
-
-                <span class="ml-3">
-
-                    Thanh toán trước
-
-                </span>
-
-            </label>
-
-            <div
-                id="onlinePayment"
-                class="border rounded-lg p-4 mt-5"
-                style="display:none;">
-
-                <label class="flex items-center mb-3">
-
-                    <input
-                        type="radio"
-                        name="online_type"
-                        value="BANK"
-                        checked>
-
-                    <span class="ml-2">
-
-                        Chuyển khoản ngân hàng
-
-                    </span>
-
-                </label>
-
-                <label class="flex items-center">
-
-                    <input
-                        type="radio"
-                        name="online_type"
-                        value="ZALOPAY">
-
-                    <span class="ml-2">
-
-                        Thanh toán qua ZaloPay
-
-                    </span>
-
-                </label>
-
-            </div>
-
-        </div>
-
-        <!-- NÚT ĐẶT HÀNG -->
-
-        <div class="flex justify-between">
-
-            <a
-                href="/fruit_shop/customer/cart/index.php"
-                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded">
-
-                <i class="fa-solid fa-arrow-left"></i>
-
-                Quay lại giỏ hàng
-
-            </a>
-
-            <button
-                type="submit"
-                class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded">
-
-                <i class="fa-solid fa-check"></i>
-
-                Xác nhận đặt hàng
-
-            </button>
-
-        </div>
-
-    </form>
+        });
+    </script>
 
 </div>
+
+<?php require_once __DIR__ . "/../../includes/footer.php"; ?>

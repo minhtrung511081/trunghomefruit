@@ -1,32 +1,53 @@
 <?php
-include("../includes/header.php");
-include("../includes/navbar.php");
+session_start();
+
+require_once __DIR__ . "/../../includes/header.php";
+require_once __DIR__ . "/../../includes/navbar.php";
 ?>
 
-<div class="max-w-xl mx-auto mt-20 text-center">
+<div class="max-w-2xl mx-auto mt-16">
 
-    <i class="fa fa-circle-check text-green-600 text-7xl"></i>
+    <div class="bg-white rounded-lg shadow-lg p-10 text-center">
 
-    <h2 class="text-4xl font-bold mt-5">
+        <div class="text-7xl text-green-600 mb-5">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
 
-        Đặt hàng thành công
+        <h2 class="text-3xl font-bold text-green-600 mb-4">
+            Đặt hàng thành công
+        </h2>
 
-    </h2>
+        <p class="text-gray-600 mb-8">
+            Cảm ơn bạn đã mua hàng tại
+            <strong>Cửa Hàng Gia Dụng và Trái Cây</strong>.
+        </p>
 
-    <p class="mt-3">
+        <div class="flex justify-center gap-4">
 
-        Cảm ơn bạn đã mua hàng.
+            <a href="/fruit_shop/index.php"
+                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded">
 
-    </p>
+                <i class="fa-solid fa-house"></i>
 
-    <a
-        href="/fruit_shop/index.php"
-        class="inline-block bg-green-600 text-white px-6 py-3 rounded mt-6">
+                Tiếp tục mua sắm
 
-        Tiếp tục mua sắm
+            </a>
 
-    </a>
+            <a href="/fruit_shop/orders/index.php"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded">
+
+                <i class="fa-solid fa-box"></i>
+
+                Đơn hàng của tôi
+
+            </a>
+
+        </div>
+
+    </div>
 
 </div>
 
-<?php include("../includes/footer.php"); ?>
+<?php
+require_once __DIR__ . "/../../includes/footer.php";
+?>

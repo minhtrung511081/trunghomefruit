@@ -2,7 +2,7 @@
 
     <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
 
-        <a href="../index.php" class="text-2xl font-bold">
+        <a href="/fruit_shop/index.php" class="text-2xl font-bold">
             🍉 Cửa Hàng Gia Dụng và Trái Cây
         </a>
 
@@ -19,7 +19,7 @@
 
             ?>
 
-            <a href="/fruit_shop/cart/index.php">
+            <a href="/fruit_shop/customer/cart/index.php">
 
                 <i class="fa fa-shopping-cart"></i>
 
