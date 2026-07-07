@@ -3,6 +3,7 @@ session_start();
 
 require_once __DIR__ . "/../../config/database.php";
 
+
 if (!isset($_SESSION['user'])) {
 
     header("Location:/fruit_shop/login.php");
@@ -14,9 +15,6 @@ if ($_SESSION['user']['role_name'] != "Seller") {
 
     die("Bạn không có quyền truy cập.");
 }
-
-require_once __DIR__ . "/../../includes/header.php";
-require_once __DIR__ . "/../../includes/navbar.php";
 
 $sql = "
 SELECT
@@ -237,8 +235,9 @@ $result = mysqli_query($conn, $sql);
                             <td class="text-center space-x-2">
 
                                 <a
-                                    href="/fruit_shop/seller/orders/detail.php?id=<?= $order['id']; ?>"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded">
+                                    href="#"
+                                    class="btn-detail-order bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded"
+                                    data-id="<?= $order['id']; ?>">
 
                                     <i class="fa-solid fa-eye"></i>
 
@@ -247,9 +246,9 @@ $result = mysqli_query($conn, $sql);
                                 <?php if (($order['status'] ?? 'Đang xử lý') == 'Đang xử lý') { ?>
 
                                     <a
-                                        href="/fruit_shop/seller/orders/confirm.php?id=<?= $order['id']; ?>"
-                                        onclick="return confirm('Xác nhận đơn hàng này?');"
-                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded">
+                                        href="#"
+                                        class="btn-confirm-order bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded"
+                                        data-id="<?= $order['id']; ?>">
 
                                         <i class="fa-solid fa-check"></i>
 
@@ -418,5 +417,73 @@ $result = mysqli_query($conn, $sql);
         </div>
 
     </div>
+
+    <script>
+        $(document).off(
+            "click",
+            ".btn-detail-order"
+        );
+
+
+        $(document).on(
+            "click",
+            ".btn-detail-order",
+            function(e) {
+
+                e.preventDefault();
+
+
+                let id = $(this).data("id");
+
+
+                $("#content").load(
+                    "/fruit_shop/seller/orders/detail.php?id=" + id
+                );
+
+
+            }
+        );
+
+
+        $(document).on(
+            "click",
+            ".btn-confirm-order",
+            function(e) {
+
+                e.preventDefault();
+
+
+                let id = $(this).data("id");
+
+
+                if (confirm("Xác nhận đơn hàng này?")) {
+
+
+                    $("#content").load(
+                        "/fruit_shop/seller/orders/detail.php?id=" + id,
+                        function() {
+
+
+
+                        });
+
+                    $("#content").load(
+                        "/fruit_shop/seller/orders/confirm.php?id=" + id,
+                        function() {
+
+                            $("#content").load(
+                                "/fruit_shop/seller/orders/index.php"
+                            );
+
+                            if (typeof L !== "undefined") {
+                                console.log("Leaflet OK");
+                            }
+                        });
+
+                }
+
+
+            });
+    </script>
 
 </div>
