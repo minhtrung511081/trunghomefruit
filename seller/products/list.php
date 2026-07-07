@@ -43,7 +43,8 @@ if (!isset($_SESSION['user'])) {
                 </h2>
 
                 <a
-                    href="add.php"
+                    href="#"
+                    id="btn-add"
                     class="bg-green-600 text-white px-5 py-3 rounded">
 
                     <i class="fa fa-plus"></i>
@@ -165,12 +166,9 @@ if (!isset($_SESSION['user'])) {
                             </a>
 
                             <a
-
-                                onclick="return confirm('Xóa sản phẩm?')"
-
-                                href="delete.php?id=<?= $row['id']; ?>"
-
-                                class="bg-red-600 text-white px-3 py-2 rounded">
+                                href="#"
+                                class="btn-delete bg-red-600 text-white px-3 py-2 rounded"
+                                data-id="<?= $row['id'] ?>">
 
                                 Xóa
 
@@ -193,6 +191,53 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <script>
+        $(document).on("click", ".btn-delete", function(e) {
+
+            e.preventDefault();
+
+
+            if (!confirm("Xóa sản phẩm?"))
+                return;
+
+
+
+            let id = $(this).data("id");
+
+
+
+            $("#content").load(
+                "/fruit_shop/seller/products/delete.php?id=" + id
+            );
+
+
+        });
+
+        $(document).on("click", "#btn-add", function(e) {
+
+            e.preventDefault();
+
+
+            $("#content").load(
+                "/fruit_shop/seller/products/add.php",
+                function(response, status, xhr) {
+
+
+                    if (status == "error") {
+
+                        console.log("Lỗi:", xhr.status);
+                        console.log(xhr.responseText);
+
+                        alert("Không tải được add.php");
+
+                    }
+
+
+                }
+            );
+
+
+        });
+
         $(document).off("click", ".btn-edit");
 
         $(document).on("click", ".btn-edit", function(e) {
@@ -203,15 +248,69 @@ if (!isset($_SESSION['user'])) {
 
             console.log("Edit ID:", id);
 
-            $("#content").load("products/edit.php?id=" + id, function(response, status, xhr) {
+            $("#content").load(
+                "/fruit_shop/seller/products/edit.php?id=" + id,
+                function(response, status, xhr) {
 
-                if (status == "error") {
-                    console.log(xhr.status);
+                    if (status == "error") {
+
+                        console.log(xhr.responseText);
+
+                        alert("Không tải được edit.php");
+
+                    }
+
+                }
+            );
+
+        });
+
+        $(document).on("submit", "#form-add", function(e) {
+
+            e.preventDefault();
+
+
+            let formData = new FormData(this);
+
+
+            $.ajax({
+
+                url: "/fruit_shop/seller/products/save.php",
+
+                type: "POST",
+
+                data: formData,
+
+                processData: false,
+
+                contentType: false,
+
+
+                success: function(response) {
+
+
+                    console.log(response);
+
+
+                    $("#content").load(
+                        "/fruit_shop/seller/products/list.php"
+                    );
+
+
+                },
+
+
+                error: function(xhr) {
+
                     console.log(xhr.responseText);
-                    alert("Không tải được edit.php");
+
+                    alert("Lỗi lưu sản phẩm");
+
                 }
 
+
             });
+
 
         });
     </script>

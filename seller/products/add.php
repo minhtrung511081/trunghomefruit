@@ -34,8 +34,7 @@ if (!isset($_SESSION['user'])) {
             </h2>
 
             <form
-
-                action="save.php"
+                id="addForm"
 
                 method="POST"
 
@@ -154,6 +153,76 @@ if (!isset($_SESSION['user'])) {
         </div>
 
     </div>
+
+    <script>
+        $("#addForm").on("submit", function(e) {
+
+
+            e.preventDefault();
+
+
+            let formData = new FormData(this);
+
+
+
+            $.ajax({
+
+                url: "/fruit_shop/seller/products/save.php",
+
+                type: "POST",
+
+                data: formData,
+
+                processData: false,
+
+                contentType: false,
+
+
+                success: function(res) {
+
+
+                    console.log(res);
+
+
+                    if (res.trim() == "success") {
+
+
+                        alert("Thêm sản phẩm thành công");
+
+
+                        $("#content").load(
+                            "/fruit_shop/seller/products/list.php"
+                        );
+
+
+                    } else {
+
+
+                        alert(res);
+
+
+                    }
+
+
+                },
+
+
+                error: function(xhr) {
+
+
+                    console.log(xhr.responseText);
+
+                    alert("Lỗi lưu sản phẩm");
+
+
+                }
+
+
+            });
+
+
+        });
+    </script>
 
 </body>
 

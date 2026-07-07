@@ -51,7 +51,7 @@ $stmt->bind_param(
 
 if ($stmt->execute()) {
 
-    header("Location: list.php?success=1");
+    echo "success";
 } else {
 
     echo "Lỗi: " . $conn->error;

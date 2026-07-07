@@ -10,7 +10,7 @@
 
         </span>
 
-        <a href="auth/logout.php">
+        <a href="/fruit_shop/auth/logout.php">
 
             <i class="fa fa-right-from-bracket"></i>
 

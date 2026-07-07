@@ -43,4 +43,11 @@ $stmt->bind_param("i", $id);
 
 $stmt->execute();
 
-header("Location:list.php");
+?>
+<script>
+    $("#content").load(
+        "/fruit_shop/seller/products/list.php"
+    );
+</script>
+<?php
+exit;

@@ -29,7 +29,7 @@
 
             </a>
 
-            <a href="order/orders.php">
+            <a href="/fruit_shop/orders/index.php">
                 <i class="fa-solid fa-box"></i>
                 Đơn hàng
             </a>
@@ -41,7 +41,7 @@
                     <strong><?= $_SESSION['user']['fullname']; ?></strong>
                 </span>
 
-                <a href="auth/logout.php">
+                <a href="/fruit_shop/auth/logout.php">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     Đăng xuất
                 </a>
