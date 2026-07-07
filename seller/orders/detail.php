@@ -344,13 +344,37 @@ ORDER BY od.id ASC
 
                         <td>
 
+                            <div class="space-x-2">
+
+                                <a href="/fruit_shop/seller/orders/confirm.php?id=<?= $order['id']; ?>"
+                                    class="bg-green-600 text-white px-4 py-2 rounded">
+                                    Xác nhận
+                                </a>
+
+                                <a href="/fruit_shop/seller/orders/cancel.php?id=<?= $order['id']; ?>"
+                                    class="bg-red-600 text-white px-4 py-2 rounded">
+                                    Hủy
+                                </a>
+
+                                <a href="/fruit_shop/seller/orders/assign_shipper.php?id=<?= $order['id']; ?>"
+                                    class="bg-blue-600 text-white px-4 py-2 rounded">
+                                    Giao shipper
+                                </a>
+
+                                <a href="/fruit_shop/seller/orders/received.php?id=<?= $order['id']; ?>"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded">
+                                    Đã giao
+                                </a>
+
+                            </div>
+
                             <?php
 
                             $status = $order['status'];
 
                             switch ($status) {
 
-                                case "Đang xử lý":
+                                case "Chờ xác nhận":
 
                                     echo '<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
         Đang xử lý
@@ -531,23 +555,20 @@ ORDER BY od.id ASC
 
                 $status = $order['status'];
 
-                if ($status == "Đang xử lý") {
+
+                if ($status == "Chờ xác nhận") {
 
                 ?>
 
                     <a
-                        href="confirm.php?id=<?= $order['id']; ?>"
-                        onclick="return confirm('Xác nhận đơn hàng này?')"
-                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded">
-
-                        <i class="fa-solid fa-check"></i>
-
-                        Xác nhận đơn
-
+                        href="#"
+                        class="btn-confirm-order bg-green-600 text-white px-4 py-2 rounded"
+                        data-id="<?= $order['id'] ?>">
+                        Xác nhận
                     </a>
 
                     <a
-                        href="cancel.php?id=<?= $order['id']; ?>"
+                        href="/fruit_shop/seller/orders/cancel.php?id=<?= $order['id']; ?>"
                         onclick="return confirm('Bạn chắc chắn muốn hủy đơn?')"
                         class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded">
 
@@ -564,7 +585,7 @@ ORDER BY od.id ASC
                 ?>
 
                     <a
-                        href="assign_shipper.php?id=<?= $order['id']; ?>"
+                        href="/fruit_shop/seller/orders/assign_shipper.php?id=<?= $order['id']; ?>"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded">
 
                         <i class="fa-solid fa-truck"></i>
@@ -777,4 +798,45 @@ ORDER BY od.id ASC
                 });
 
         }, 300);
+
+
+        $(document).off("click", ".btn-confirm-order");
+
+        $(document).on("click", ".btn-confirm-order", function(e) {
+
+            e.preventDefault();
+
+            let id = $(this).data("id");
+
+            if (!confirm("Xác nhận đơn?")) return;
+
+            $.ajax({
+
+                url: "/fruit_shop/seller/orders/confirm.php",
+
+                type: "GET",
+
+                data: {
+                    id: id
+                },
+
+                success: function(res) {
+
+                    res = $.trim(res);
+
+                    if (res == "success") {
+
+                        $("#content").load("/fruit_shop/seller/orders/detail.php?id=" + id);
+
+                    } else {
+
+                        alert("Không thể xác nhận đơn.");
+
+                    }
+
+                }
+
+            });
+
+        });
     </script>

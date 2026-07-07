@@ -459,31 +459,51 @@ $result = mysqli_query($conn, $sql);
                 if (confirm("Xác nhận đơn hàng này?")) {
 
 
-                    $("#content").load(
-                        "/fruit_shop/seller/orders/detail.php?id=" + id,
-                        function() {
+                    $.get(
+                        "/fruit_shop/seller/orders/confirm.php", {
+                            id: id
+                        },
+                        function(res) {
 
+                            if (res == "success") {
 
+                                $("#content").load(
+                                    "/fruit_shop/seller/orders/detail.php?id=" + id
+                                );
 
-                        });
+                            } else {
 
-                    $("#content").load(
-                        "/fruit_shop/seller/orders/confirm.php?id=" + id,
-                        function() {
+                                alert(res);
 
-                            $("#content").load(
-                                "/fruit_shop/seller/orders/index.php"
-                            );
-
-                            if (typeof L !== "undefined") {
-                                console.log("Leaflet OK");
                             }
-                        });
+
+                        }
+                    );
 
                 }
 
 
             });
+
+        $(document).on("click", ".btn-confirm-order", function(e) {
+            e.preventDefault();
+
+            let id = $(this).data("id");
+
+            if (!confirm("Xác nhận đơn hàng này?")) return;
+
+            $.get("/fruit_shop/seller/orders/confirm.php", {
+                id: id
+            }, function(res) {
+
+                if (res.trim() === "success") {
+                    $("#content").load("/fruit_shop/seller/orders/detail.php?id=" + id);
+                } else {
+                    alert(res);
+                }
+
+            });
+        });
     </script>
 
 </div>

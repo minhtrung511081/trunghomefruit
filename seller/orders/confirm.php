@@ -44,7 +44,7 @@ if (mysqli_num_rows($rs) == 0) {
 
 $order = mysqli_fetch_assoc($rs);
 
-if ($order['status'] != "Đang xử lý") {
+if (trim($order['status']) !== "Chờ xác nhận") {
 
     echo "<script>
 
@@ -67,8 +67,10 @@ $stmt = mysqli_prepare(
     $conn,
     "UPDATE orders
      SET status='Đã xác nhận'
-     WHERE id=?"
+     WHERE id=?
+       AND status='Chờ xác nhận'"
 );
+
 
 mysqli_stmt_bind_param(
     $stmt,
@@ -76,22 +78,14 @@ mysqli_stmt_bind_param(
     $order_id
 );
 
+
+
 if (mysqli_stmt_execute($stmt)) {
 
-    echo "<script>
-
-    alert('Đã xác nhận đơn hàng.');
-
-    location='detail.php?id={$order_id}';
-
-    </script>";
+    // header("Location: /fruit_shop/seller/orders/detail.php?id=" . $order_id);
+    echo "success";
+    exit;
 } else {
 
-    echo "<script>
-
-    alert('Có lỗi xảy ra.');
-
-    history.back();
-
-    </script>";
+    echo "Có lỗi";
 }
