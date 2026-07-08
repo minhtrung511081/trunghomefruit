@@ -20,10 +20,17 @@ if (!isset($_GET['id'])) {
 $order_id = (int)$_GET['id'];
 
 $sql = "
-SELECT *
-FROM orders
-WHERE id=?
-LIMIT 1
+SELECT
+o.*,
+u.warehouse_address,
+u.warehouse_latitude,
+u.warehouse_longitude
+FROM orders o
+JOIN order_details od ON od.order_id=o.id
+JOIN products p ON p.id=od.product_id
+JOIN users u ON u.id=p.seller_id
+WHERE o.id=?
+GROUP BY o.id
 ";
 
 $stmt = mysqli_prepare($conn, $sql);
@@ -495,32 +502,46 @@ ORDER BY od.id ASC
 
             <!-- Bản đồ -->
 
+
+
             <div class="border rounded-lg p-5">
 
                 <h3 class="text-xl font-bold mb-4">
                     <i class="fa-solid fa-location-dot text-red-500"></i>
-                    Vị trí giao hàng
+                    Thông tin giao hàng
                 </h3>
 
-                <!-- Địa chỉ lưu trong database -->
                 <div class="mb-3">
-                    <strong>Địa chỉ khách nhập:</strong><br>
+                    <b>🏪 Địa chỉ kho hàng</b><br>
 
-                    <span id="dbAddress">
-                        <?= htmlspecialchars($order['address']); ?>
+                    <span class="text-green-700">
+                        <?= htmlspecialchars($order['warehouse_address']) ?>
                     </span>
                 </div>
 
-                <!-- Địa chỉ lấy từ GPS -->
-                <div class="mb-4">
-                    <strong>Địa chỉ theo GPS:</strong><br>
+                <div class="mb-3">
+                    <b>📍 Địa chỉ giao hàng</b><br>
 
-                    <span id="mapAddress" class="text-blue-600">
-                        Đang tải...
+                    <span class="text-blue-700">
+                        <?= htmlspecialchars($order['address']) ?>
                     </span>
                 </div>
 
-                <div id="map" style="height:350px;border-radius:10px;"></div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+
+                    <div>
+                        <b>Khoảng cách:</b><br>
+                        <span id="distance">Đang tính...</span>
+                    </div>
+
+                    <div>
+                        <b>Thời gian:</b><br>
+                        <span id="time">Đang tính...</span>
+                    </div>
+
+                </div>
+
+                <div id="map" style="height:420px;border-radius:10px;"></div>
 
             </div>
 
@@ -724,68 +745,221 @@ ORDER BY od.id ASC
 
     </div>
 
-
-
     <script>
-        $(document).on(
-            "click",
-            "#btnBackOrder",
-            function() {
+        let map = null;
 
-                $("#content").load(
-                    "/fruit_shop/seller/orders/index.php"
-                );
+        $(document).on("click", "#btnBackOrder", function() {
 
-            }
-        );
+            $("#content").load("/fruit_shop/seller/orders/index.php");
 
+        });
+
+        let sellerLat = Number("<?= $order['warehouse_latitude'] ?>");
+        let sellerLng = Number("<?= $order['warehouse_longitude'] ?>");
+
+        let customerLat = Number("<?= $order['latitude'] ?>");
+        let customerLng = Number("<?= $order['longitude'] ?>");
 
         setTimeout(function() {
 
-            const mapElement = document.getElementById("map");
+            if ($("#map").length == 0) return;
 
-            // Nếu chưa có thẻ #map thì không tạo bản đồ
-            if (!mapElement) {
+            if (
+                sellerLat == 0 ||
+                sellerLng == 0 ||
+                customerLat == 0 ||
+                customerLng == 0
+            ) {
+
+                alert("Thiếu tọa độ kho hàng hoặc khách hàng.");
                 return;
+
             }
 
-            let lat = <?= (float)$order['latitude']; ?>;
-            let lng = <?= (float)$order['longitude']; ?>;
+            if (map != null) {
 
-            var map = L.map("map").setView([lat, lng], 17);
+                map.remove();
+
+            }
+
+            map = L.map("map").setView(
+                [sellerLat, sellerLng],
+                13
+            );
 
             L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution: "© OpenStreetMap"
+                    attribution: "&copy; OpenStreetMap"
                 }
             ).addTo(map);
 
-            L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup("Vị trí giao hàng")
-                .openPopup();
+            //--------------------------------------------------
+            // Icon
+            //--------------------------------------------------
 
-            // Lấy tên địa chỉ
-            fetch(
-                    "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-                    lat +
-                    "&lon=" +
-                    lng
+            let warehouseIcon = L.icon({
+
+                iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+
+                iconSize: [38, 38]
+
+            });
+
+            let customerIcon = L.icon({
+
+                iconUrl: "https://cdn-icons-png.flaticon.com/512/535/535239.png",
+
+                iconSize: [38, 38]
+
+            });
+
+            //--------------------------------------------------
+            // Marker
+            //--------------------------------------------------
+
+            L.marker(
+                    [sellerLat, sellerLng], {
+                        icon: warehouseIcon
+                    }
                 )
-                .then(res => res.json())
+                .addTo(map)
+                .bindPopup("🏪 Kho hàng");
+
+            L.marker(
+                    [customerLat, customerLng], {
+                        icon: customerIcon
+                    }
+                )
+                .addTo(map)
+                .bindPopup("📍 Người nhận");
+
+            //--------------------------------------------------
+            // Đường đi xe
+            //--------------------------------------------------
+
+            L.Routing.control({
+
+                    waypoints: [
+
+                        L.latLng(sellerLat, sellerLng),
+
+                        L.latLng(customerLat, customerLng)
+
+                    ],
+
+                    lineOptions: {
+
+                        styles: [{
+
+                            color: "#2563eb",
+
+                            opacity: 0.9,
+
+                            weight: 6
+
+                        }]
+
+                    },
+
+                    createMarker: function() {
+
+                        return null;
+
+                    },
+
+                    addWaypoints: false,
+
+                    draggableWaypoints: false,
+
+                    fitSelectedRoutes: true,
+
+                    show: false,
+
+                    routeWhileDragging: false
+
+                }).addTo(map)
+
+                .on("routesfound", function(e) {
+
+                    let route = e.routes[0];
+
+                    $("#distance").html(
+
+                        (route.summary.totalDistance / 1000).toFixed(2)
+
+                        +
+                        " km"
+
+                    );
+
+                    $("#time").html(
+
+                        Math.round(route.summary.totalTime / 60)
+
+                        +
+                        " phút"
+
+                    );
+
+                });
+
+            //--------------------------------------------------
+            // Địa chỉ kho
+            //--------------------------------------------------
+
+            fetch(
+
+                    "https://nominatim.openstreetmap.org/reverse?format=jsonv2"
+
+                    +
+                    "&lat=" + sellerLat
+
+                    +
+                    "&lon=" + sellerLng
+
+                )
+
+                .then(r => r.json())
+
                 .then(data => {
 
                     if (data.display_name) {
 
-                        document.getElementById("mapAddress").innerHTML =
-                            data.display_name;
+                        $("#warehouseAddress").html(data.display_name);
+
+                    }
+
+                });
+
+            //--------------------------------------------------
+            // Địa chỉ khách
+            //--------------------------------------------------
+
+            fetch(
+
+                    "https://nominatim.openstreetmap.org/reverse?format=jsonv2"
+
+                    +
+                    "&lat=" + customerLat
+
+                    +
+                    "&lon=" + customerLng
+
+                )
+
+                .then(r => r.json())
+
+                .then(data => {
+
+                    if (data.display_name) {
+
+                        $("#customerAddress").html(data.display_name);
 
                     }
 
                 });
 
         }, 300);
-
 
         $(document).off("click", ".btn-confirm-order");
 
@@ -797,35 +971,29 @@ ORDER BY od.id ASC
 
             if (!confirm("Xác nhận đơn?")) return;
 
-            $.ajax({
+            $.get(
 
-                url: "/fruit_shop/seller/orders/confirm.php",
+                "/fruit_shop/seller/orders/confirm.php",
 
-                type: "GET",
-
-                data: {
+                {
                     id: id
                 },
 
-                success: function(res) {
+                function(res) {
 
-                    res = $.trim(res);
+                    if ($.trim(res) == "success") {
 
-                    if (res == "success") {
-
-                        $("#content").load(
-                            "/fruit_shop/seller/orders/detail.php?id=<?= $order_id ?>"
-                        );
+                        $("#content").load("/fruit_shop/seller/orders/detail.php?id=<?= $order_id ?>");
 
                     } else {
 
-                        alert("Không thể xác nhận đơn.");
+                        alert(res);
 
                     }
 
                 }
 
-            });
+            );
 
         });
     </script>
