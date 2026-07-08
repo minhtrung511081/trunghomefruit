@@ -84,21 +84,22 @@ mysqli_stmt_close($stmt);
 
 $sql = "
 
-SELECT 
+SELECT
 
 order_details.*,
 
-products.name,
+products.product_name,
 
-products.image
+products.image,
+
+products.unit
 
 FROM order_details
 
-JOIN products
+INNER JOIN products
+    ON order_details.product_id = products.id
 
-ON order_details.product_id = products.id
-
-WHERE order_id = ?
+WHERE order_details.order_id = ?
 
 ";
 
@@ -267,7 +268,7 @@ include("../../includes/navbar.php");
 
                     <td class="p-3 border">
 
-                        <?= htmlspecialchars($item['name']) ?>
+                        <?= htmlspecialchars($item['product_name']) ?>
 
                     </td>
 
@@ -296,17 +297,20 @@ include("../../includes/navbar.php");
 
 
 
-        <div class="mt-6">
+        <div class="mt-6 flex gap-3">
+
+            <a href="/fruit_shop/shipper/dashboard.php"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-3 rounded">
+                <i class="fa-solid fa-arrow-left"></i>
+                Quay lại Dashboard
+            </a>
 
 
             <a href="update_status.php?id=<?= $order['id'] ?>"
-
-                class="bg-green-600 text-white px-5 py-3 rounded">
-
+                class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded">
+                <i class="fa-solid fa-truck"></i>
                 Cập nhật trạng thái
-
             </a>
-
 
         </div>
 

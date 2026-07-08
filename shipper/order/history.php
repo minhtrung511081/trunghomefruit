@@ -29,7 +29,7 @@ FROM orders
 
 WHERE shipper_id = ?
 
-AND status = 'Hoàn thành'
+AND status IN ('Hoàn thành','Đã hủy')
 
 ORDER BY created_at DESC
 
@@ -77,11 +77,26 @@ include("../../includes/navbar.php");
 
 
 
-        <h2 class="text-3xl font-bold mb-6">
+        <div class="flex justify-between items-center mb-6">
 
-            Lịch sử giao hàng
+            <h2 class="text-3xl font-bold">
 
-        </h2>
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                Lịch sử giao hàng
+
+            </h2>
+
+            <a href="/fruit_shop/shipper/dashboard.php"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-3 rounded">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Quay lại Dashboard
+
+            </a>
+
+        </div>
 
 
 
@@ -152,6 +167,12 @@ include("../../includes/navbar.php");
                         <th class="border p-3">
 
                             Thao tác
+
+                        </th>
+
+                        <th class="border p-3">
+
+                            Trạng thái
 
                         </th>
 
@@ -235,6 +256,24 @@ include("../../includes/navbar.php");
                                 </a>
 
 
+
+                            </td>
+
+                            <td class="border p-3 text-center">
+
+                                <?php if ($order['status'] == "Hoàn thành") { ?>
+
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded">
+                                        Hoàn thành
+                                    </span>
+
+                                <?php } else { ?>
+
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded">
+                                        Đã hủy
+                                    </span>
+
+                                <?php } ?>
 
                             </td>
 

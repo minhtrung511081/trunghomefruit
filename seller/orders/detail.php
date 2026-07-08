@@ -344,30 +344,6 @@ ORDER BY od.id ASC
 
                         <td>
 
-                            <div class="space-x-2">
-
-                                <a href="/fruit_shop/seller/orders/confirm.php?id=<?= $order['id']; ?>"
-                                    class="bg-green-600 text-white px-4 py-2 rounded">
-                                    Xác nhận
-                                </a>
-
-                                <a href="/fruit_shop/seller/orders/cancel.php?id=<?= $order['id']; ?>"
-                                    class="bg-red-600 text-white px-4 py-2 rounded">
-                                    Hủy
-                                </a>
-
-                                <a href="/fruit_shop/seller/orders/assign_shipper.php?id=<?= $order['id']; ?>"
-                                    class="bg-blue-600 text-white px-4 py-2 rounded">
-                                    Giao shipper
-                                </a>
-
-                                <a href="/fruit_shop/seller/orders/received.php?id=<?= $order['id']; ?>"
-                                    class="bg-indigo-600 text-white px-4 py-2 rounded">
-                                    Đã giao
-                                </a>
-
-                            </div>
-
                             <?php
 
                             $status = $order['status'];
@@ -411,7 +387,11 @@ ORDER BY od.id ASC
                                     echo '<span class="bg-green-600 text-white px-3 py-1 rounded">
         Hoàn thành
         </span>';
-
+                                case "Đã hủy":
+                                    echo '<span class="bg-red-100 text-red-700 px-3 py-1 rounded">
+            Đã hủy
+          </span>';
+                                    break;
                                     break;
 
                                 case "Đã hủy":
@@ -762,6 +742,13 @@ ORDER BY od.id ASC
 
         setTimeout(function() {
 
+            const mapElement = document.getElementById("map");
+
+            // Nếu chưa có thẻ #map thì không tạo bản đồ
+            if (!mapElement) {
+                return;
+            }
+
             let lat = <?= (float)$order['latitude']; ?>;
             let lng = <?= (float)$order['longitude']; ?>;
 
@@ -826,7 +813,9 @@ ORDER BY od.id ASC
 
                     if (res == "success") {
 
-                        $("#content").load("/fruit_shop/seller/orders/detail.php?id=" + id);
+                        $("#content").load(
+                            "/fruit_shop/seller/orders/detail.php?id=<?= $order_id ?>"
+                        );
 
                     } else {
 

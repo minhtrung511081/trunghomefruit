@@ -46,26 +46,30 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
     );
 }
 
+$seller_id = $_SESSION['user']['id'];
+
 $sql = "UPDATE products SET
-product_name=?,
-category=?,
-unit=?,
-price=?,
-image=?,
-description=?
-WHERE id=?";
+    product_name=?,
+    category=?,
+    unit=?,
+    price=?,
+    image=?,
+    description=?
+WHERE id=?
+AND seller_id=?";
 
 $stmt = $conn->prepare($sql);
 
 $stmt->bind_param(
-    "sssissi",
+    "sssdssii",
     $product_name,
     $category,
     $unit,
     $price,
     $image,
     $description,
-    $id
+    $id,
+    $seller_id
 );
 
 if ($stmt->execute()) {

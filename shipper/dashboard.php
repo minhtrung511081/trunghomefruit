@@ -127,8 +127,6 @@ mysqli_stmt_close($stmt);
 
 
 
-
-
 // Hoàn thành
 
 $sql = "
@@ -165,7 +163,35 @@ $completed_orders = mysqli_fetch_assoc($result)['total'];
 mysqli_stmt_close($stmt);
 
 
+// Đã hủy
 
+$sql = "
+
+SELECT COUNT(*) AS total
+
+FROM orders
+
+WHERE shipper_id = ?
+
+AND status='Đã hủy'
+
+";
+
+$stmt = mysqli_prepare($conn, $sql);
+
+mysqli_stmt_bind_param(
+    $stmt,
+    "i",
+    $shipper_id
+);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$cancel_orders = mysqli_fetch_assoc($result)['total'];
+
+mysqli_stmt_close($stmt);
 
 
 
@@ -222,10 +248,20 @@ include("../includes/navbar.php");
     </h1>
 
 
+    <div class="mb-6">
 
+        <a href="/fruit_shop/shipper/order/history.php"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded">
 
-    <div class="grid grid-cols-4 gap-6">
+            <i class="fa-solid fa-clock-rotate-left"></i>
 
+            Lịch sử giao hàng
+
+        </a>
+
+    </div>
+
+    <div class="grid grid-cols-5 gap-6">
 
 
         <div class="bg-white shadow rounded-xl p-6">
@@ -296,6 +332,22 @@ include("../includes/navbar.php");
             <p class="text-3xl font-bold mt-3">
 
                 <?= $completed_orders ?>
+
+            </p>
+
+        </div>
+
+        <div class="bg-white shadow rounded-xl p-6">
+
+            <h3 class="text-gray-500">
+
+                Đã hủy
+
+            </h3>
+
+            <p class="text-3xl font-bold mt-3 text-red-600">
+
+                <?= $cancel_orders ?>
 
             </p>
 

@@ -82,11 +82,16 @@ if (mysqli_num_rows($result) == 0) {
 
 $order = mysqli_fetch_assoc($result);
 
-
+if ($order['status'] == "Hoàn thành") {
+    echo "
+    <script>
+        alert('Đơn hàng đã hoàn thành, không thể cập nhật nữa.');
+        window.location.href='detail.php?id={$order_id}';
+    </script>";
+    exit;
+}
 
 mysqli_stmt_close($stmt);
-
-
 
 
 // xử lý cập nhật
@@ -96,29 +101,39 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $status = $_POST['status'];
 
+    $current = $order['status'];
 
+    if ($current == "Đã xác nhận" && $status != "Đang giao") {
 
-    $allow = [
-
-        "Chờ xác nhận",
-
-        "Đã xác nhận",
-
-        "Đang giao",
-
-        "Hoàn thành"
-
-    ];
-
-
-
-    if (!in_array($status, $allow)) {
-
-
-        die("Trạng thái không hợp lệ");
+        echo "
+    <script>
+        alert('Chỉ được chuyển sang trạng thái Đang giao.');
+        history.back();
+    </script>";
+        exit;
     }
 
+    if (
+        $current == "Đang giao" &&
+        !in_array($status, ["Hoàn thành", "Đã hủy"])
+    ) {
+        echo "
+    <script>
+        alert('Chỉ được chuyển sang Hoàn thành hoặc Đã hủy.');
+        history.back();
+    </script>";
+        exit;
+    }
 
+    if ($current == "Hoàn thành") {
+
+        echo "
+    <script>
+        alert('Đơn hàng đã hoàn thành.');
+        window.location.href='detail.php?id={$order_id}';
+    </script>";
+        exit;
+    }
 
 
     $sql = "
@@ -205,60 +220,45 @@ include("../../includes/navbar.php");
 
             </label>
 
+            <select name="status" class="w-full border rounded-lg p-3">
 
+                <?php if ($order['status'] == "Đã xác nhận") { ?>
 
-            <select
+                    <option value="Đang giao">
+                        Đang giao
+                    </option>
 
-                name="status"
+                <?php } elseif ($order['status'] == "Đang giao") { ?>
 
-                class="w-full border rounded-lg p-3">
+                    <option value="Hoàn thành">
+                        Hoàn thành
+                    </option>
 
+                    <option value="Đã hủy">
+                        Không nhận hàng (Hủy đơn)
+                    </option>
 
+                <?php } elseif ($order['status'] == "Hoàn thành") { ?>
 
-                <option value="Chờ xác nhận"
+                    <option disabled selected>
+                        Đơn hàng đã hoàn thành
+                    </option>
 
-                    <?= $order['status'] == "Chờ xác nhận" ? "selected" : "" ?>>
+                <?php } elseif ($order['status'] == "Đã hủy") { ?>
 
-                    Chờ xác nhận
+                    <option disabled selected>
+                        Đơn hàng đã hủy
+                    </option>
 
-                </option>
+                <?php } else { ?>
 
+                    <option disabled selected>
+                        Không thể cập nhật
+                    </option>
 
-
-                <option value="Đã xác nhận"
-
-                    <?= $order['status'] == "Đã xác nhận" ? "selected" : "" ?>>
-
-                    Đã xác nhận
-
-                </option>
-
-
-
-                <option value="Đang giao"
-
-                    <?= $order['status'] == "Đang giao" ? "selected" : "" ?>>
-
-                    Đang giao
-
-                </option>
-
-
-
-                <option value="Hoàn thành"
-
-                    <?= $order['status'] == "Hoàn thành" ? "selected" : "" ?>>
-
-                    Hoàn thành
-
-                </option>
-
-
+                <?php } ?>
 
             </select>
-
-
-
 
             <button
 
@@ -292,7 +292,21 @@ include("../../includes/navbar.php");
 
 </div>
 
+<script>
+    document.querySelector("form").addEventListener("submit", function(e) {
 
+        let status = document.querySelector("select[name='status']").value;
+
+        if (status === "Đã hủy") {
+
+            if (!confirm("Xác nhận khách không nhận hàng và hủy đơn?")) {
+                e.preventDefault();
+            }
+
+        }
+
+    });
+</script>
 
 <?php
 

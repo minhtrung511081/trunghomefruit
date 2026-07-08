@@ -33,20 +33,34 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
     }
 }
 
+$seller_id = $_SESSION['user']['id'];
+
 $sql = "INSERT INTO products
-(product_name,category,unit,price,image,description)
-VALUES (?,?,?,?,?,?)";
+(
+    seller_id,
+    product_name,
+    category,
+    unit,
+    price,
+    image,
+    description
+)
+VALUES
+(
+    ?,?,?,?,?,?,?
+)";
 
 $stmt = $conn->prepare($sql);
 
 $stmt->bind_param(
-    "sssiss",
+    "isssdss",
+    $seller_id,
     $product_name,
     $category,
     $unit,
     $price,
     $imageName,
-    $description
+    $description,
 );
 
 if ($stmt->execute()) {

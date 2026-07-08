@@ -46,6 +46,18 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role_name'] != "Seller") {
 
     </div>
 
+    <script>
+        $(function() {
+
+            <?php if (isset($_GET['load']) && $_GET['load'] == "orders") { ?>
+
+                $("#content").load("/fruit_shop/seller/orders/index.php");
+
+            <?php } ?>
+
+        });
+    </script>
+
     <script src="../assets/js/seller.js"></script>
 
 </body>

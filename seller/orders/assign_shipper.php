@@ -83,9 +83,8 @@ require_once __DIR__ . "/../../includes/navbar.php";
             </h2>
 
             <form
-                method="post"
-                <form id="frmAssign">
-                <!-- action="assign_shipper_save.php" -->
+                id="frmAssign"
+                method="post">
                 <input
                     type="hidden"
                     name="order_id"
@@ -215,7 +214,8 @@ require_once __DIR__ . "/../../includes/navbar.php";
 
                     if (res == "success") {
 
-                        window.location.href = "/fruit_shop/seller/orders/detail.php?id=<?= $order_id ?>";
+                        window.location.href = "/fruit_shop/seller/dashboard.php?load=orders";
+
 
                     } else {
 

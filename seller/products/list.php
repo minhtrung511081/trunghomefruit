@@ -99,16 +99,29 @@ if (!isset($_SESSION['user'])) {
 
                 <?php
 
-                $where = "";
 
-                if (isset($_GET['keyword'])) {
+                $seller_id = $_SESSION['user']['id'];
 
-                    $key = $_GET['keyword'];
+                if (!empty($_GET['keyword'])) {
 
-                    $where = " WHERE product_name LIKE '%$key%' ";
+                    $key = mysqli_real_escape_string($conn, $_GET['keyword']);
+
+                    $sql = "
+        SELECT *
+        FROM products
+        WHERE seller_id = $seller_id
+        AND product_name LIKE '%$key%'
+        ORDER BY id DESC
+    ";
+                } else {
+
+                    $sql = "
+        SELECT *
+        FROM products
+        WHERE seller_id = $seller_id
+        ORDER BY id DESC
+    ";
                 }
-
-                $sql = "SELECT * FROM products $where ORDER BY id DESC";
 
                 $result = $conn->query($sql);
 

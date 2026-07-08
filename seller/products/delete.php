@@ -35,11 +35,16 @@ if ($row = $result->fetch_assoc()) {
     }
 }
 
-$sql = "DELETE FROM products WHERE id=?";
+$seller_id = $_SESSION['user']['id'];
+
+$sql = "DELETE
+FROM products
+WHERE id = ?
+AND seller_id = ?";
 
 $stmt = $conn->prepare($sql);
 
-$stmt->bind_param("i", $id);
+$stmt->bind_param("ii", $id, $seller_id);
 
 $stmt->execute();
 

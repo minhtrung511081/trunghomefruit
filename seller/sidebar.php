@@ -79,7 +79,17 @@
 
         </li>
 
+        <li>
+            <a href="#"
+                class="menu-item block p-4"
+                data-page="profile/location.php">
 
+                <i class="fa-solid fa-location-dot"></i>
+
+                <span>Vị trí kho hàng</span>
+
+            </a>
+        </li>
 
         <li>
 
