@@ -147,7 +147,6 @@ include("../../includes/navbar.php");
         </h2>
 
 
-
         <div class="grid grid-cols-2 gap-5">
 
 
@@ -312,6 +311,13 @@ include("../../includes/navbar.php");
                 Cập nhật trạng thái
             </a>
 
+            <a href="../tracking/tracking.php?id=<?= $order['id'] ?>"
+                class="bg-green-600 text-white px-4 py-2 rounded">
+                <i class="fa-solid fa-location-dot"></i>
+                Cập nhật vị trí
+            </a>
+
+
         </div>
 
 
@@ -321,7 +327,76 @@ include("../../includes/navbar.php");
 
 </div>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js">
+</script>
 
+<script>
+    let map = L.map("map").setView([10.0452, 105.7469], 13);
+
+    L.tileLayer(
+
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+        {
+
+            maxZoom: 19
+
+        }
+
+    ).addTo(map);
+
+    let marker = null;
+
+    function loadTracking() {
+
+        fetch(
+
+                "get_tracking.php?order_id=<?= $order['id'] ?>"
+
+            )
+
+            .then(res => res.json())
+
+            .then(data => {
+
+                if (!data.success) {
+
+                    return;
+
+                }
+
+                let lat = parseFloat(data.data.latitude);
+
+                let lng = parseFloat(data.data.longitude);
+
+                let note = data.data.note;
+
+                let time = data.data.created_at;
+
+                document.getElementById("note").innerHTML = note;
+
+                document.getElementById("time").innerHTML = time;
+
+                if (marker) {
+
+                    marker.setLatLng([lat, lng]);
+
+                } else {
+
+                    marker = L.marker([lat, lng]).addTo(map);
+
+                }
+
+                map.panTo([lat, lng]);
+
+            });
+
+    }
+
+    loadTracking();
+
+    setInterval(loadTracking, 5000);
+</script>
 
 <?php
 

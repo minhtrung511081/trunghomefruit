@@ -114,6 +114,24 @@ foreach ($_SESSION['cart'] as $product_id => $qty) {
 |--------------------------------------------------------------------------
 */
 
+$sql = "
+SELECT seller_id
+FROM products
+WHERE id = ?
+";
+
+$stmt = mysqli_prepare($conn, $sql);
+
+mysqli_stmt_bind_param($stmt, "i", $product_id);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$product = mysqli_fetch_assoc($result);
+
+$seller_id = $product['seller_id'];
+
 $sqlOrder = "INSERT INTO orders (
     user_id,
     full_name,

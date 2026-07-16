@@ -2,8 +2,7 @@
 
 session_start();
 
-include("../config/database.php");
-
+include("../../config/database.php");
 
 // kiểm tra đăng nhập
 
@@ -57,12 +56,9 @@ if (!$user) {
 }
 
 
-
-
 // cập nhật thông tin
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-
 
     $fullname = $_POST['fullname'];
 
@@ -83,35 +79,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     ) {
 
 
-        $folder = "../uploads/avatar/";
-
+        $folder = __DIR__ . "/../../assets/images/avatars/";
 
         if (!is_dir($folder)) {
-
             mkdir($folder, 0777, true);
         }
 
-
-
-        $filename = time()
-            . "_"
-            . basename($_FILES['avatar']['name']);
-
-
+        $filename = time() . "_" . preg_replace('/[^a-zA-Z0-9._-]/', '_', $_FILES['avatar']['name']);
 
         $path = $folder . $filename;
 
-
-
-        move_uploaded_file(
-
-            $_FILES['avatar']['tmp_name'],
-
-            $path
-
-        );
-
-
+        if (move_uploaded_file($_FILES['avatar']['tmp_name'], $path)) {
+            $avatar = $filename;
+        } else {
+            die("Upload thất bại");
+        }
 
         $avatar = $filename;
     }
@@ -175,9 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 
-include("../includes/header.php");
-
-include("../includes/navbar.php");
+include("../../includes/header.php");
+include("../../includes/navbar.php");
 
 ?>
 
@@ -195,7 +176,19 @@ include("../includes/navbar.php");
 
         </h2>
 
+        <div class="mb-6">
 
+            <a
+                href="/fruit_shop/shipper/dashboard.php"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-3 rounded-lg inline-block">
+
+                <i class="fa fa-arrow-left"></i>
+
+                Quay lại Dashboard
+
+            </a>
+
+        </div>
 
 
         <?php if (isset($_GET['updated'])) { ?>
@@ -220,29 +213,24 @@ include("../includes/navbar.php");
 
             <div class="text-center mb-6">
 
+                <?php
+                $avatar = "/fruit_shop/assets/images/avatars/default-avatar.jpg";
 
-                <?php if (!empty($user['avatar'])) { ?>
+                if (!empty($user['avatar'])) {
 
+                    $avatarFile = __DIR__ . "/../../assets/images/avatars/" . $user['avatar'];
 
-                    <img
+                    if (file_exists($avatarFile)) {
+                        $avatar = "/fruit_shop/assets/images/avatars/" . htmlspecialchars($user['avatar']);
+                    }
+                }
+                ?>
 
-                        src="../uploads/avatar/<?= htmlspecialchars($user['avatar']) ?>"
-
-                        class="w-32 h-32 rounded-full mx-auto object-cover">
-
-
-                <?php } else { ?>
-
-
-                    <div class="w-32 h-32 bg-gray-200 rounded-full mx-auto flex items-center justify-center">
-
-                        No Avatar
-
-                    </div>
-
-
-                <?php } ?>
-
+                <img
+                    id="avatarPreview"
+                    src="<?= $avatar ?>"
+                    class="w-32 h-32 rounded-full mx-auto object-cover"
+                    alt="Avatar">
 
             </div>
 
@@ -258,11 +246,10 @@ include("../includes/navbar.php");
 
 
                 <input
-
                     type="file"
-
                     name="avatar"
-
+                    id="avatar"
+                    accept="image/*"
                     class="w-full border rounded-lg p-3">
 
 
@@ -401,10 +388,25 @@ include("../includes/navbar.php");
 
 </div>
 
+<script>
+    document.getElementById("avatar").addEventListener("change", function(e) {
+
+        if (e.target.files.length > 0) {
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                document.getElementById("avatarPreview").src = event.target.result;
+            };
+
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+    });
+</script>
 
 
 <?php
 
-include("../includes/footer.php");
-
+include("../../includes/footer.php");
 ?>

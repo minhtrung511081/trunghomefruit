@@ -12,9 +12,18 @@ if (!isset($_GET['id'])) {
 
 $id = (int)$_GET['id'];
 
-$stmt = $conn->prepare("SELECT * FROM products WHERE id=?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
+            $seller_id = $_SESSION['user']['id'];
+
+            $stmt = $conn->prepare("
+    SELECT *
+    FROM products
+    WHERE id = ?
+    AND seller_id = ?
+");
+
+            $stmt->bind_param("ii", $id, $seller_id);
+
+            $stmt->execute();
 
 $result = $stmt->get_result();
 

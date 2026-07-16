@@ -239,8 +239,6 @@ include("../includes/navbar.php");
 
 <div class="max-w-6xl mx-auto mt-8">
 
-
-
     <h1 class="text-3xl font-bold mb-8">
 
         Dashboard Shipper
@@ -256,6 +254,16 @@ include("../includes/navbar.php");
             <i class="fa-solid fa-clock-rotate-left"></i>
 
             Lịch sử giao hàng
+
+        </a>
+
+        <a href="profile/profile.php"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded ml-4"
+            data-page="profile/profile.php">
+
+            <i class="fa fa-user"></i>
+
+            <span>Hồ sơ</span>
 
         </a>
 

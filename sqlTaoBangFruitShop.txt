@@ -401,3 +401,52 @@ CREATE TABLE reviews (
     INDEX(product_id),
     INDEX(user_id)
 );
+
+CREATE TABLE order_tracking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    latitude DECIMAL(10,8) NOT NULL,
+    longitude DECIMAL(11,8) NOT NULL,
+    address VARCHAR(255),
+    note VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+CREATE TABLE order_tracking (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    order_id INT NOT NULL,
+
+    shipper_id INT NOT NULL,
+
+    latitude DECIMAL(10,8) NOT NULL,
+
+    longitude DECIMAL(11,8) NOT NULL,
+
+    address VARCHAR(255),
+
+    note VARCHAR(255),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (shipper_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+
+);
+
+ALTER TABLE orders
+ADD current_latitude DECIMAL(10,8),
+ADD current_longitude DECIMAL(11,8),
+ADD current_address VARCHAR(255);
+
+ALTER TABLE orders
+ADD delivery_latitude DECIMAL(10,8),
+
+ADD delivery_longitude DECIMAL(11,8);
